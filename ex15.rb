@@ -1,20 +1,15 @@
-# Using Ruby version: ruby 2.7.1p83 (2020-03-31 revision a0c7c23c9c) [x86_64-linux]
-# Your Ruby code here
 class Integer
   def find_primes_below
-    init_prime = 2
-    prime_list = []
-    init_prime.step(self,1) do |number|
-      divisor = 0
-      init_prime.step(Math.sqrt(number),1) {|div| divisor +=1 if number%div == 0}
-      prime_list << number if divisor == 0
+    num_array = (2..self).to_a
+    (2..Math.sqrt(self)).each do |step_size|
+      (step_size - 2..self - 2).step(step_size).each { |index| num_array[index] = 0 unless step_size == num_array[index] }
     end
-    prime_list
+    num_array.reject(&:zero?).inspect
   end
 end
 
 if ARGV.length.zero?
   puts 'Please provide an input'
 else
-  print ARGV[0].to_i.find_primes_below
+  puts ARGV[0].to_i.find_primes_below
 end

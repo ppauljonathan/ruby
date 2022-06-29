@@ -17,7 +17,6 @@ end
 if ARGV.length.zero?
   puts 'Please provide an input'
 else
-  REMOVE_SQUARE_BRACKETS_AND_APOSTROPHE_REGEX = /[\[\]\']/.freeze
-  array_of_input = ARGV[0].gsub(REMOVE_SQUARE_BRACKETS_AND_APOSTROPHE_REGEX, '').split(',')
+  array_of_input = ARGV[0][1..-1]..split(',')
   print array_of_input.sort_by_odd_even_and_store_in_hash
 end

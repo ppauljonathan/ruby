@@ -5,7 +5,6 @@ class String
     split(' ').reverse.join(' ').inspect
   end
 end
-
 if ARGV.length.zero?
   puts 'Please provide an input'
 else
