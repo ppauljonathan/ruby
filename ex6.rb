@@ -15,15 +15,14 @@ class Bike < Vehicle
   def initialize(name, price, dealer)
     super(name, price)
     @dealer = dealer
-    @percent_price_increase = @price / 100.0
+    @price = price.to_i
   end
   def to_s
     super.to_s
     puts "#{self.class} Dealer: #{@dealer}"
   end
   def price_increase(percentage)
-    @price += percentage.to_f * @percent_price_increase
-    @percent_price_increase = @price / 100.0
+    @price += percentage.to_f * (@price / 100.0)
   end
 end
 
