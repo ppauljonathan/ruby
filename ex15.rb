@@ -1,15 +1,21 @@
 class Integer
   def find_primes_below
-    num_array = (2..self).to_a
-    (2..Math.sqrt(self)).each do |step_size|
-      (step_size - 2..self - 2).step(step_size).each { |index| num_array[index] = 0 unless step_size == num_array[index] }
+    prime_list = []
+    2.step(self) do |possible_prime|
+      prime_list.push(possible_prime)
+      2.step(Math.sqrt(possible_prime)) do |divisors|
+        if (possible_prime % divisors).zero?
+          prime_list.pop
+          break
+        end
+      end
     end
-    num_array.reject(&:zero?).inspect
+    prime_list
   end
 end
 
 if ARGV.length.zero?
   puts 'Please provide an input'
 else
-  puts ARGV[0].to_i.find_primes_below
+  p ARGV[0].to_i.find_primes_below
 end
