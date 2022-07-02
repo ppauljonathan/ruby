@@ -3,7 +3,7 @@ require 'csv'
 class FormatCsvToText
   def format
     file_data = CSV.read('./employee_db.csv', converters: lambda { |f| f.strip })[1..]
-    hash_by_job = file_data.group_by { |elem| elem[2] }
+    hash_by_job = file_data.group_by { |elem| elem[2] }.sort.to_h
     file_to_write = File.new('./employee_data.txt', "w")
     begin
       hash_by_job.each do |(k, v)|
