@@ -1,26 +1,40 @@
+# Using Ruby version: ruby 2.7.1p83 (2020-03-31 revision a0c7c23c9c) [x86_64-linux]
+# Your Ruby code here
+
 require 'csv'
 
-class FormatCsvToText
-  def format
-    file_data = CSV.read('./employee_db.csv', converters: lambda { |f| f.strip })[1..]
-    hash_by_job = file_data.group_by { |elem| elem[2] }.sort.to_h
-    file_to_write = File.new('./employee_data.txt', "w")
-    begin
-      hash_by_job.each do |(k, v)|
-        file_to_write.write("\n#{k}#{'s' if v.length > 1}\n")
-        v.each do |emp_data|
-          file_to_write.write("#{emp_data[0]} (EmpId: #{emp_data[1]})\n")
-        end
+module FormatCsvToText
+  def data_hashed_by_job
+    @file_data.group_by { |elem| elem[:designation] }
+  end
+
+  def write_to_file
+    @file_data = CSV.read('./employee_db.csv',
+                          converters: ->(f) { f.strip },
+                          headers: true,
+                          header_converters: ->(f) { f.strip.downcase.to_sym })
+    data_hashed_by_job.each do |(key, val)|
+      write("\n#{key}#{'s' if val.length > 1}\n")
+      val.each do |emp_data|
+        write("#{emp_data[:name]} (EmpId: #{emp_data[:empid]})\n")
       end
-    rescue
-      msg = "an Error occured"
-    else
-      msg = "executed successfully"
     end
-    file_to_write.close
-    msg
   end
 end
 
+class File
+  include FormatCsvToText
+end
 
-puts FormatCsvToText.new.format
+file_to_write = File.open('./emp_data.txt', 'w')
+begin
+  file_to_write.write_to_file
+rescue Errno => e
+  puts "error in creating file handle\nError:\n#{e}"
+rescue StandardError => e
+  file_to_write.close
+  puts "An error occured\nError:\n#{e}"
+else
+  file_to_write.close
+  puts 'Executed successfully'
+end
