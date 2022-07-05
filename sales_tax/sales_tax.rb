@@ -1,3 +1,5 @@
+# Using Ruby version: ruby 2.7.1p83 (2020-03-31 revision a0c7c23c9c) [x86_64-linux]
+# Your Ruby code here
 YESREGEX = /^y|yes$/
 
 class TaxCalculator
@@ -15,9 +17,9 @@ class Product
     print "\nName of the product: "
     @item_data.push(gets.chomp)
     print 'Imported?: '
-    @item_data.push((gets.chomp =~ YESREGEX).is_a? Integer)
+    @item_data.push(((gets.chomp =~ YESREGEX).is_a? Integer))
     print 'Exempted from sales tax?: '
-    @item_data.push((gets.chomp =~ YESREGEX).is_a? Integer)
+    @item_data.push(((gets.chomp =~ YESREGEX).is_a? Integer))
     print 'Price: '
     @item_data.push(gets.chomp.to_f)
     @item_data
@@ -41,13 +43,12 @@ class Product
   end
 end
 
-
 class RateList
   def initialize
     enter_more = 'yes'
     @rate_list_data = []
     while enter_more =~ YESREGEX
-      @rate_list_data.push(Product.new())
+      @rate_list_data.push(Product.new)
       print'Do you want to add more items to your list(y/n): '
       enter_more = gets.chomp
     end
@@ -62,9 +63,9 @@ class RateList
   def display
     puts "\nRate List"
     puts 'ITEM'.ljust(15) + 'SALES_TAX'.ljust(15) + 'IMPORT_DUTY'.ljust(15) + 'PRICE'.ljust(15) + 'SUB_TOTAL'.ljust(15)
-    @rate_list_data.each { |elem| elem.display }
+    @rate_list_data.each(&:display)
     puts ''.ljust(45) + 'GRAND_TOTAL'.ljust(15) + calc_grand_total.to_i.to_f.to_s.ljust(15)
   end
 end
 
-RateList.new().display
+RateList.new.display
