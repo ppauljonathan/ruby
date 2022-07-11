@@ -6,17 +6,17 @@ class Interest
   attr_accessor :principal, :time
 
   def initialize
-    yield self
+    yield self if block_given?
   end
 
   private
 
   def calc_simple_interest
-    (@principal * INTEREST_RATE * @time) / 100
+    (principal * INTEREST_RATE * time) / 100
   end
 
   def calc_compound_interest
-    (@principal * ((1 + INTEREST_RATE / 100)**@time)) - @principal
+    (principal * ((1 + INTEREST_RATE / 100)**time)) - principal
   end
 
   public
