@@ -10,21 +10,21 @@ class Name
   def initialize(name)
     @firstname = name[0]
     @lastname = name[1]
-    check_name
+    check
   end
 
-  def check_name
+  def check
     begin
       raise CapitalizeError, 'Firstname must start with uppercase letter' if @firstname.capitalize != @firstname
       raise NameError, 'Lastname cannot be blank' unless @lastname
     rescue => e
-      puts e.message
+      puts e
     else
-      display_name
+      display
     end
   end
 
-  def display_name
+  def display
     puts "Your name is #{@firstname} #{@lastname}"
   end
 end
