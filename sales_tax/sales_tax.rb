@@ -1,6 +1,6 @@
 # Using Ruby version: ruby 2.7.1p83 (2020-03-31 revision a0c7c23c9c) [x86_64-linux]
 # Your Ruby code here
-YESREGEX = /^y|yes$/
+YES_REGEX = /^y|yes$/
 
 class TaxCalculator
   def self.calc_sales_tax(is_valid, cost)
@@ -13,41 +13,50 @@ class TaxCalculator
 end
 
 class Product
-  def get_item_details
+  def initialize
+    @details = []
+    input_details
+    calculate_tax
+  end
+
+  def input_details
     print "\nName of the product: "
-    @item_data.push(gets.chomp)
+    @details.push(gets.chomp)
     print 'Imported?: '
-    @item_data.push(((gets.chomp =~ YESREGEX).is_a? Integer))
+    @details.push(((gets.chomp =~ YES_REGEX).is_a? Integer))
     print 'Exempted from sales tax?: '
-    @item_data.push(((gets.chomp =~ YESREGEX).is_a? Integer))
+    @details.push(((gets.chomp =~ YES_REGEX).is_a? Integer))
     print 'Price: '
-    @item_data.push(gets.chomp.to_f)
-    @item_data
+    @details.push(gets.chomp.to_f)
   end
 
   def calc_sub_total
-    @item_data[1] + @item_data[2] + @item_data[3]
+    @details[1] + @details[2] + @details[3]
   end
 
-  def initialize
-    @item_data = []
-    get_item_details
-    @item_data[2] = TaxCalculator.calc_sales_tax(@item_data[2], @item_data[3])
-    @item_data[1] = TaxCalculator.calc_import_duty(@item_data[1], @item_data[3])
-    @item_data.push(calc_sub_total)
+  def calculate_tax
+    @details[2] = TaxCalculator.calc_sales_tax(@details[2], @details[3])
+    @details[1] = TaxCalculator.calc_import_duty(@details[1], @details[3])
+    @details.push(calc_sub_total)
   end
 
-  def display
-    @item_data.each { |data_point| print data_point.to_s.ljust(15) }
-    puts
+  def to_s
+    output = ''
+    @details.each { |data_point| output << data_point.to_s.ljust(15) }
+    output << "\n"
   end
 end
 
 class RateList
   def initialize
-    enter_more = 'yes'
     @rate_list_data = []
-    while enter_more =~ YESREGEX
+    generate_rate_list
+    calc_grand_total
+  end
+
+  def generate_rate_list
+    enter_more = 'yes'
+    while enter_more =~ YES_REGEX
       @rate_list_data.push(Product.new)
       print'Do you want to add more items to your list(y/n): '
       enter_more = gets.chomp
@@ -60,12 +69,13 @@ class RateList
     total
   end
 
-  def display
-    puts "\nRate List"
-    puts 'ITEM'.ljust(15) + 'SALES_TAX'.ljust(15) + 'IMPORT_DUTY'.ljust(15) + 'PRICE'.ljust(15) + 'SUB_TOTAL'.ljust(15)
-    @rate_list_data.each(&:display)
-    puts ''.ljust(45) + 'GRAND_TOTAL'.ljust(15) + calc_grand_total.to_i.to_f.to_s.ljust(15)
+  def to_s
+    output = ''
+    output << "\nRate List\n"
+    output << 'ITEM'.ljust(15) + 'SALES_TAX'.ljust(15) + 'IMPORT_DUTY'.ljust(15) + 'PRICE'.ljust(15) + 'SUB_TOTAL'.ljust(15) + "\n"
+    @rate_list_data.each { |item| output <<  item.to_s }
+    output << ''.ljust(45) + 'GRAND_TOTAL'.ljust(15) + calc_grand_total.to_i.to_f.to_s.ljust(15)
   end
 end
 
-RateList.new.display
+puts RateList.new
